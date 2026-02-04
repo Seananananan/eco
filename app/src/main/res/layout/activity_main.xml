@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main"
+    android:background="@android:color/white">
+
+    <!-- TOP GREEN BAR -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="#87B86A"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo"
+            android:contentDescription="EcoCollect logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="16dp"/>
+
+        <TextView
+            android:id="@+id/tvMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="≡"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="16dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- GREETING TEXT -->
+    <TextView
+        android:id="@+id/tvGreeting"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:text="Hi, Kyle! Got anything to recycle today?"
+        android:textColor="#1B5E20"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginTop="24dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"/>
+
+    <!-- BIG POST WASTE BUTTON -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPostWaste"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:text="Post Waste      +"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:stateListAnimator="@null"
+        app:cornerRadius="10dp"
+        app:backgroundTint="#A4C97F"
+        app:layout_constraintTop_toBottomOf="@id/tvGreeting"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="24dp"/>
+
+    <TextView
+        android:id="@+id/tvFeatures"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Features"
+        android:textColor="#87B86A"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/btnPostWaste"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"/>
+
+    <!-- NEW VIEW POSTS BUTTON -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnViewPosts"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="View Posts"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:stateListAnimator="@null"
+        app:cornerRadius="10dp"
+        app:backgroundTint="#87B86A"
+        app:layout_constraintTop_toBottomOf="@id/tvFeatures"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="12dp"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardFeatures"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        app:cardUseCompatPadding="false"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:layout_constraintTop_toBottomOf="@id/btnViewPosts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSchedulePickup"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:text="Schedule\nPickup"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:stateListAnimator="@null"
+                app:cornerRadius="10dp"
+                app:backgroundTint="#A4C97F"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btnTracking"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTracking"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                android:text="Tracking"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                app:backgroundTint="#A4C97F"
+                app:cornerRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btnSchedulePickup"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuidelines"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:text="Recycling\nGuidelines"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:stateListAnimator="@null"
+                app:cornerRadius="10dp"
+                app:backgroundTint="#A4C97F"
+                app:layout_constraintTop_toBottomOf="@id/btnSchedulePickup"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btnCommunity"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuidelines2"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                android:text="Recycling\nGuidelines"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                app:backgroundTint="#A4C97F"
+                app:cornerRadius="10dp"
+                app:layout_constraintEnd_toStartOf="@id/btnCommunity"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnSchedulePickup" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCommunity"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:text="Community\nCleanup"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:stateListAnimator="@null"
+                app:cornerRadius="10dp"
+                app:backgroundTint="#A4C97F"
+                app:layout_constraintTop_toBottomOf="@id/btnTracking"
+                app:layout_constraintStart_toEndOf="@id/btnGuidelines"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
