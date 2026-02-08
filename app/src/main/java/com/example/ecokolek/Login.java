@@ -26,7 +26,7 @@ public class Login extends AppCompatActivity {
     private MaterialButton btnLogin;
 
     private static final String URL_LOGIN =
-            "http://192.168.1.21/android_api/login.php";
+            "http://192.168.1.12/android_api/login.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

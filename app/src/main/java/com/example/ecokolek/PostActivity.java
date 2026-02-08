@@ -144,7 +144,7 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private static final String URL_SUBMIT_POST =
-            "http://192.168.1.21/android_api/submit_post.php";
+            "http://192.168.1.12/android_api/submit_post.php";
 
     private void submitPost() {
         String title   = textOf(etTitle);

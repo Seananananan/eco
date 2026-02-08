@@ -23,7 +23,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
     private static final String URL_REGISTER =
-            "http://192.168.1.21/android_api/register.php";
+            "http://192.168.1.12/android_api/register.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

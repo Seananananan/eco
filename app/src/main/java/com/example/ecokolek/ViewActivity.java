@@ -24,6 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.example.ecokolek.VolleyMultipartRequest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,11 +37,11 @@ import java.util.Map;
 public class ViewActivity extends AppCompatActivity {
 
     private static final String URL_GET_POSTS =
-            "http://192.168.1.21/android_api/get_post.php";
+            "http://192.168.1.12/android_api/get_post.php";
     private static final String URL_DELETE_POST =
-            "http://192.168.1.21/android_api/delete_post.php";
+            "http://192.168.1.12/android_api/delete_post.php";
     private static final String URL_UPDATE_POST =
-            "http://192.168.1.21/android_api/update_post.php";
+            "http://192.168.1.12/android_api/update_post.php";
 
     private static final int REQUEST_IMAGE_EDIT = 2001;
 
@@ -50,6 +51,9 @@ public class ViewActivity extends AppCompatActivity {
 
     private ImageView currentEditImageView = null;
     private byte[] editImageBytes = null;
+
+    private Dialog currentPostDialog;  // Add this
+    private Dialog currentEditDialog;  // Add this
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,12 +222,14 @@ public class ViewActivity extends AppCompatActivity {
                     .setTextColor(android.graphics.Color.parseColor("#87B86A"));
         });
 
-        btnEdit.setOnClickListener(v ->
+        btnEdit.setOnClickListener(v -> {
+            if (!isFinishing() && !isDestroyed()) {  // ADD THIS CHECK
                 showEditDialog(postId, title, note, address, imageUrl,
-                         tvTitle, tvAddress, tvNote, imgFull)
-        );
+                        tvTitle, tvAddress, tvNote, imgFull);
+            }
+        });
 
-
+        currentPostDialog = dialog;
         dialog.show();
     }
 
@@ -425,4 +431,16 @@ public class ViewActivity extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(req);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (currentPostDialog != null && currentPostDialog.isShowing()) {
+            currentPostDialog.dismiss();
+        }
+        if (currentEditDialog != null && currentEditDialog.isShowing()) {
+            currentEditDialog.dismiss();
+        }
+    }
+
 }
