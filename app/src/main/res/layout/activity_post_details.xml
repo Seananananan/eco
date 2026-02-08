@@ -78,30 +78,45 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Barangay Lantic"
-                    android:textColor="#1B5E20"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <!-- Static label -->
+                    <TextView
+                        android:id="@+id/tvBarangayLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Barangay"
+                        android:textColor="#1B5E20"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <!-- User barangay appended -->
+                    <TextView
+                        android:id="@+id/tvUserBarangay"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text=""
+                        android:textColor="#1B5E20"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tvCityName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
-                    android:text="Carmona"
+                    android:text=""
                     android:textColor="#666666"
                     android:textSize="12sp" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CHANGE"
-                android:textColor="#87B86A"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+
         </LinearLayout>
 
         <TextView
@@ -202,7 +217,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- FORM FIELDS -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardForm"
             android:layout_width="0dp"
@@ -224,28 +238,35 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
+                <!-- Title -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilTitle"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Problem (e.g. Plastic pileup)">
+                    android:hint="Problem (e.g. Plastic pileup)"
+                    app:boxStrokeColor="#8BB86B"
+                    app:boxBackgroundColor="@android:color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapSentences"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textColorHint="@android:color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Note -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilNote"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:hint="Details (size, urgency, etc.)">
+                    android:hint="Details (size, urgency, etc.)"
+                    app:boxStrokeColor="#8BB86B"
+                    app:boxBackgroundColor="@android:color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNote"
@@ -253,26 +274,51 @@
                         android:layout_height="wrap_content"
                         android:inputType="textMultiLine"
                         android:minLines="2"
-                        android:gravity="top|start" />
+                        android:gravity="top|start"
+                        android:textColorHint="@android:color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Weight -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilAddress"
+                    android:id="@+id/tilWeight"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:hint="Exact location"
-                    app:startIconTint="#87B86A">
+                    app:boxStrokeColor="#8BB86B"
+                    app:boxBackgroundColor="@android:color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etAddress"
+                        android:id="@+id/etWeight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPostalAddress" />
+                        android:hint="Estimated weight (kg)"
+                        android:inputType="numberDecimal"
+                        android:textColorHint="@android:color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Waste type dropdown -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilWasteType"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:boxStrokeColor="#8BB86B"
+                    app:boxBackgroundColor="@android:color/white">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actWasteType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Waste type"
+                        android:inputType="none"
+                        android:textColorHint="@android:color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
 
         <LinearLayout
             android:id="@+id/layoutButtons"
@@ -316,6 +362,7 @@
                 android:stateListAnimator="@null"
                 app:backgroundTint="#87B86A"
                 app:cornerRadius="8dp" />
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

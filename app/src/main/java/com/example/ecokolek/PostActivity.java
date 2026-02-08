@@ -1,6 +1,7 @@
 package com.example.ecokolek;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -13,21 +14,31 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.exifinterface.media.ExifInterface;
 
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONObject;
+
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class PostActivity extends AppCompatActivity {
 
     private static final int REQ_PICK_IMAGE = 1001;
+    private TextInputEditText etTitle, etNote, etWeight;
+    private AutoCompleteTextView actWasteType;
 
     private CardView cardUpload;
     private ImageView imgPreview;
@@ -35,14 +46,35 @@ public class PostActivity extends AppCompatActivity {
     private TextView tvUploadTitle, tvUploadSub;
     private byte[] imageBytes = null;
 
-    private TextInputEditText etTitle, etNote, etAddress;
+
     private MaterialButton btnDraft, btnSubmit;
+    private static final String URL_USER_PROFILE =
+            "http://192.168.1.21/android_api/get_user_profile.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_details);
+        etTitle      = findViewById(R.id.etTitle);
+        etNote       = findViewById(R.id.etNote);
+        etWeight     = findViewById(R.id.etWeight);
+        actWasteType = findViewById(R.id.actWasteType);
 
+        String[] wasteTypes = getResources().getStringArray(R.array.waste_types);
+        ArrayAdapter<String> wasteAdapter = new ArrayAdapter<>(
+                this,
+                R.layout.item_waste_type,
+                wasteTypes
+        );
+        actWasteType.setAdapter(wasteAdapter);
+        actWasteType.setDropDownHeight(600);
+
+
+        actWasteType.setAdapter(wasteAdapter);
+
+
+        TextView tvUserBarangay = findViewById(R.id.tvUserBarangay);
+        TextView tvCityName     = findViewById(R.id.tvCityName);
 
         cardUpload       = findViewById(R.id.cardUpload);
         imgPreview       = findViewById(R.id.imgPreview);
@@ -52,13 +84,23 @@ public class PostActivity extends AppCompatActivity {
 
         etTitle   = findViewById(R.id.etTitle);
         etNote    = findViewById(R.id.etNote);
-        etAddress = findViewById(R.id.etAddress);
+
 
         btnDraft  = findViewById(R.id.btnDraft);
         btnSubmit = findViewById(R.id.btnSubmit);
 
-        cardUpload.setOnClickListener(v -> openImagePicker());
+        // read from SharedPreferences instead of calling API
+        android.content.SharedPreferences prefs =
+                getSharedPreferences("user_prefs", MODE_PRIVATE);
+        String userBarangay = prefs.getString("user_barangay", "");
+        String userCity     = prefs.getString("user_city", "Carmona");
 
+        if (!userBarangay.isEmpty()) {
+            tvUserBarangay.setText("(" + userBarangay + ")");
+        }
+        tvCityName.setText(userCity);
+
+        cardUpload.setOnClickListener(v -> openImagePicker());
         btnDraft.setOnClickListener(v -> saveDraft());
         btnSubmit.setOnClickListener(v -> submitPost());
     }
@@ -123,7 +165,7 @@ public class PostActivity extends AppCompatActivity {
                 matrix.postRotate(270);
                 break;
             default:
-                return source; // already correct
+                return source;
         }
         return Bitmap.createBitmap(
                 source,
@@ -135,41 +177,111 @@ public class PostActivity extends AppCompatActivity {
                 true
         );
     }
-
+    private static final String URL_SAVE_DRAFT =
+            "http://192.168.1.21/android_api/save_draft_post.php";
+    private int draftId = 0;
     private void saveDraft() {
-        String title   = textOf(etTitle);
-        String note    = textOf(etNote);
-        String address = textOf(etAddress);
+        String title     = textOf(etTitle);
+        String note      = textOf(etNote);
+        String weight    = textOf(etWeight);
+        String wasteType = actWasteType.getText() == null
+                ? ""
+                : actWasteType.getText().toString().trim();
 
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        int userId = prefs.getInt("user_id", 0);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("user_id", String.valueOf(userId));
+        params.put("title", title);
+        params.put("note", note);
+        params.put("weight_kg", weight);
+        params.put("waste_type", wasteType);
+        if (draftId != 0) {
+            params.put("draft_id", String.valueOf(draftId));
+        }
+
+        Map<String, VolleyMultipartRequest.DataPart> files = new HashMap<>();
+        if (imageBytes != null) {
+            files.put("image",
+                    new VolleyMultipartRequest.DataPart(
+                            "draft_image.jpg",
+                            imageBytes,
+                            "image/jpeg"
+                    ));
+        }
+
+        VolleyMultipartRequest req = new VolleyMultipartRequest(
+                Request.Method.POST,
+                URL_SAVE_DRAFT,
+                response -> {
+                    try {
+                        String resStr = new String(response.data, StandardCharsets.UTF_8);
+                        JSONObject obj = new JSONObject(resStr);
+                        boolean success = obj.optBoolean("success", false);
+                        String message  = obj.optString("message", "Draft not saved");
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                        if (success && draftId == 0) {
+                            draftId = obj.optInt("draft_id", 0);
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(this, "Draft save parse error", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Draft save error", Toast.LENGTH_SHORT).show(),
+                params,
+                files
+        );
+
+        Volley.newRequestQueue(this).add(req);
     }
+
 
     private static final String URL_SUBMIT_POST =
             "http://192.168.1.21/android_api/submit_post.php";
 
     private void submitPost() {
-        String title   = textOf(etTitle);
-        String note    = textOf(etNote);
-        String address = textOf(etAddress);
+        String title = textOf(etTitle);
+        String note = textOf(etNote);
+        String weight = textOf(etWeight);
+        String wasteType = actWasteType.getText() == null
+                ? ""
+                : actWasteType.getText().toString().trim();
 
-        if (title.isEmpty() || note.isEmpty() || address.isEmpty()) {
+        if (title.isEmpty() || note.isEmpty() || weight.isEmpty() || wasteType.isEmpty()) {
             Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-
-        android.content.SharedPreferences prefs =
-                getSharedPreferences("user_prefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
         int userId = prefs.getInt("user_id", 0);
         if (userId == 0) {
             Toast.makeText(this, "Please log in again.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        if (draftId != 0) {
+            // use ONLY this when posting a draft
+            publishDraft(userId);
+        } else {
+            // use ONLY this when creating a new post
+            submitNewPost(userId, title, note, weight, wasteType);
+        }
+
+    }
+
+    private void submitNewPost(int userId,
+                               String title,
+                               String note,
+                               String weight,
+                               String wasteType) {
+
         Map<String, String> params = new java.util.HashMap<>();
         params.put("user_id", String.valueOf(userId));
         params.put("title", title);
         params.put("note", note);
-        params.put("address", address);
+        params.put("weight", weight);
+        params.put("waste_type", wasteType);
 
         Map<String, VolleyMultipartRequest.DataPart> files = null;
         if (imageBytes != null) {
@@ -190,18 +302,7 @@ public class PostActivity extends AppCompatActivity {
                     android.util.Log.d("POST_RESPONSE", resStr);
                     Toast.makeText(PostActivity.this, "Post submitted successfully", Toast.LENGTH_LONG).show();
 
-
-                    etTitle.setText("");
-                    etNote.setText("");
-                    etAddress.setText("");
-
-                    imageBytes = null;
-                    imgPreview.setImageDrawable(null);
-                    imgPreview.setVisibility(View.GONE);
-
-                    tvUploadTitle.setText("Upload image");
-                    tvUploadSub.setText("Tap to add a photo");
-                    layoutUploadInfo.setVisibility(View.VISIBLE);
+                    clearFormAndReset();
                 },
                 error -> {
                     String msg;
@@ -220,12 +321,67 @@ public class PostActivity extends AppCompatActivity {
                 files
         );
 
-
         com.android.volley.RequestQueue queue =
                 com.android.volley.toolbox.Volley.newRequestQueue(this);
         queue.add(request);
     }
+    private static final String URL_PUBLISH_DRAFT =
+            "http://192.168.1.21/android_api/publish_draft.php";
 
+    private void publishDraft(int userId) {
+        com.android.volley.toolbox.StringRequest req =
+                new com.android.volley.toolbox.StringRequest(
+                        com.android.volley.Request.Method.POST,
+                        URL_PUBLISH_DRAFT,
+                        response -> {
+                            try {
+                                org.json.JSONObject obj = new org.json.JSONObject(response);
+                                boolean success = obj.optBoolean("success", false);
+                                String message  = obj.optString("message", "Publish failed");
+                                Toast.makeText(PostActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                                if (success) {
+                                    draftId = 0;
+                                    clearFormAndReset();
+                                }
+                            } catch (Exception e) {
+                                Toast.makeText(PostActivity.this,
+                                        "Publish parse error",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        },
+                        error -> Toast.makeText(PostActivity.this,
+                                "Publish error",
+                                Toast.LENGTH_SHORT).show()
+                ) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new java.util.HashMap<>();
+                        params.put("user_id", String.valueOf(userId));
+                        params.put("draft_id", String.valueOf(draftId));
+                        return params;
+                    }
+                };
+
+        com.android.volley.RequestQueue queue =
+                com.android.volley.toolbox.Volley.newRequestQueue(this);
+        queue.add(req);
+    }
+        private void clearFormAndReset() {
+            etTitle.setText("");
+            etNote.setText("");
+            etWeight.setText("");
+            actWasteType.setText("");
+
+            imageBytes = null;
+            imgPreview.setImageDrawable(null);
+            imgPreview.setVisibility(View.GONE);
+            imgPreview.setVisibility(View.GONE);
+
+            tvUploadTitle.setText("Upload image");
+            tvUploadSub.setText("Tap to add a photo");
+            layoutUploadInfo.setVisibility(View.VISIBLE);
+        }
 
     private String textOf(TextInputEditText et) {
         return et == null ? "" : Objects.toString(et.getText(), "").trim();

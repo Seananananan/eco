@@ -91,7 +91,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"/>
 
-    <!-- NEW VIEW POSTS BUTTON -->
+    <!-- VIEW POSTS BUTTON -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnViewPosts"
         android:layout_width="0dp"
@@ -110,6 +110,25 @@
         android:layout_marginEnd="24dp"
         android:layout_marginTop="12dp"/>
 
+    <!-- NEW VIEW DRAFTS BUTTON -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnViewDrafts"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="View Drafts"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:stateListAnimator="@null"
+        app:cornerRadius="10dp"
+        app:backgroundTint="#87B86A"
+        app:layout_constraintTop_toBottomOf="@id/btnViewPosts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="12dp"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardFeatures"
         android:layout_width="0dp"
@@ -118,7 +137,7 @@
         app:cardUseCompatPadding="false"
         app:cardElevation="0dp"
         app:cardBackgroundColor="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/btnViewPosts"
+        app:layout_constraintTop_toBottomOf="@id/btnViewDrafts"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"

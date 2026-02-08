@@ -1,3 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">EcoKolek</string>
+    <!-- your other strings here -->
+
+    <string-array name="waste_types">
+        <item>Plastics</item>
+        <item>Electronics</item>
+        <item>Organic</item>
+        <item>Others</item>
+    </string-array>
+
 </resources>

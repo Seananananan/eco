@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -90,13 +92,14 @@ public class ViewActivity extends AppCompatActivity {
                         for (int i = 0; i < arr.length(); i++) {
                             JSONObject p = arr.getJSONObject(i);
 
-                            int postId      = p.getInt("id");
-                            String title    = p.getString("title");
-                            String note     = p.getString("note");
-                            String address  = p.getString("address");
-                            String imageUrl = p.optString("image_url", null);
-                            String created  = p.optString("created_at", "");
-                            String status   = p.optString("status", "");
+                            int postId       = p.getInt("id");
+                            String title     = p.getString("title");
+                            String note      = p.getString("note");
+                            String weight    = p.optString("weight_kg", "");
+                            String wasteType = p.optString("waste_type", "");
+                            String imageUrl  = p.optString("image_url", null);
+                            String created   = p.optString("created_at", "");
+                            String status    = p.optString("status", "");
 
                             View card = inflater.inflate(R.layout.activity_details, containerPosts, false);
 
@@ -107,7 +110,7 @@ public class ViewActivity extends AppCompatActivity {
                             MaterialButton btnView  = card.findViewById(R.id.btnViewDetails);
 
                             tvPostTitle.setText(title);
-                            tvPostAddress.setText(address);
+                            tvPostAddress.setText("Type: " + wasteType); // or "Weight: " + weight + " kg"
                             tvPostMeta.setText(created + " · " + status);
 
                             if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -116,7 +119,7 @@ public class ViewActivity extends AppCompatActivity {
 
                             String finalImageUrl = imageUrl;
                             btnView.setOnClickListener(v ->
-                                    showPostDialog(postId, title, note, address, finalImageUrl, created, status)
+                                    showPostDialog(postId, title, note, weight, wasteType, finalImageUrl, created, status)
                             );
 
                             containerPosts.addView(card);
@@ -141,6 +144,7 @@ public class ViewActivity extends AppCompatActivity {
         queue.add(request);
     }
 
+
     private void loadImageFromUrl(String url, ImageView imageView) {
         new Thread(() -> {
             try {
@@ -163,10 +167,12 @@ public class ViewActivity extends AppCompatActivity {
     private void showPostDialog(int postId,
                                 String title,
                                 String note,
-                                String address,
+                                String weight,
+                                String wasteType,
                                 String imageUrl,
                                 String created,
                                 String status) {
+
 
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_post_details);
@@ -184,14 +190,15 @@ public class ViewActivity extends AppCompatActivity {
         ImageView imgFull       = dialog.findViewById(R.id.imgFull);
         TextView tvTitle        = dialog.findViewById(R.id.tvTitleFull);
         TextView tvMeta         = dialog.findViewById(R.id.tvMetaFull);
-        TextView tvAddress      = dialog.findViewById(R.id.tvAddressFull);
         TextView tvNote         = dialog.findViewById(R.id.tvNoteFull);
         MaterialButton btnEdit  = dialog.findViewById(R.id.btnEdit);
         MaterialButton btnDelete= dialog.findViewById(R.id.btnDelete);
-
+        TextView tvWeight    = dialog.findViewById(R.id.tvWeightFull);
+        TextView tvWasteType = dialog.findViewById(R.id.tvWasteTypeFull);
         tvTitle.setText(title);
+        tvWeight.setText("Weight: " + weight + " kg");
+        tvWasteType.setText("Type: " + wasteType);
         tvMeta.setText(created + " · " + status);
-        tvAddress.setText(address);
         tvNote.setText(note);
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -219,9 +226,10 @@ public class ViewActivity extends AppCompatActivity {
         });
 
         btnEdit.setOnClickListener(v ->
-                showEditDialog(postId, title, note, address, imageUrl,
-                         tvTitle, tvAddress, tvNote, imgFull)
+                showEditDialog(postId, title, note, weight, wasteType, imageUrl,
+                        tvTitle, tvNote, tvWeight, tvWasteType, imgFull)
         );
+
 
 
         dialog.show();
@@ -230,16 +238,17 @@ public class ViewActivity extends AppCompatActivity {
     private void showEditDialog(int postId,
                                 String title,
                                 String note,
-                                String address,
+                                String weight,
+                                String wasteType,
                                 String imageUrl,
                                 TextView tvTitleFull,
-                                TextView tvAddressFull,
                                 TextView tvNoteFull,
+                                TextView tvWeightFull,
+                                TextView tvWasteTypeFull,
                                 ImageView imgFull) {
 
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.activity_editpost);
-
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.getWindow().setLayout(
@@ -247,51 +256,61 @@ public class ViewActivity extends AppCompatActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
         }
-
         dialog.setCanceledOnTouchOutside(true);
 
-        ImageView imgPreviewEdit = dialog.findViewById(R.id.imgPreviewEdit);
-        TextView btnCloseEdit    = dialog.findViewById(R.id.btnCloseEdit);
+        ImageView imgPreviewEdit        = dialog.findViewById(R.id.imgPreviewEdit);
+        TextView btnCloseEdit           = dialog.findViewById(R.id.btnCloseEdit);
         TextInputEditText etTitleEdit   = dialog.findViewById(R.id.etTitleEdit);
         TextInputEditText etNoteEdit    = dialog.findViewById(R.id.etNoteEdit);
-        TextInputEditText etAddressEdit = dialog.findViewById(R.id.etAddressEdit);
+        TextInputEditText etWeightEdit  = dialog.findViewById(R.id.etWeightEdit);
+        AutoCompleteTextView actWasteTypeEdit = dialog.findViewById(R.id.actWasteTypeEdit);
         MaterialButton btnCancelEdit    = dialog.findViewById(R.id.btnCancelEdit);
         MaterialButton btnApplyEdit     = dialog.findViewById(R.id.btnApplyEdit);
 
         etTitleEdit.setText(title);
         etNoteEdit.setText(note);
-        etAddressEdit.setText(address);
+        etWeightEdit.setText(weight);
+        actWasteTypeEdit.setText(wasteType, false);
+
+        // reuse same items as submit screen
+        String[] wasteTypes = new String[]{"Plastics", "Organics", "Electronics", "Others"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                wasteTypes
+        );
+        actWasteTypeEdit.setAdapter(adapter);
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             loadImageFromUrl(imageUrl, imgPreviewEdit);
         }
-
 
         currentEditImageView = imgPreviewEdit;
         currentFullImageView = imgFull;
         editImageBytes = null;
 
         imgPreviewEdit.setOnClickListener(v -> pickImageForEdit());
-
         btnCloseEdit.setOnClickListener(v -> dialog.dismiss());
         btnCancelEdit.setOnClickListener(v -> dialog.dismiss());
 
         btnApplyEdit.setOnClickListener(v -> {
-            String newTitle   = etTitleEdit.getText() != null ? etTitleEdit.getText().toString().trim() : "";
-            String newNote    = etNoteEdit.getText() != null ? etNoteEdit.getText().toString().trim() : "";
-            String newAddress = etAddressEdit.getText() != null ? etAddressEdit.getText().toString().trim() : "";
+            String newTitle  = etTitleEdit.getText() != null ? etTitleEdit.getText().toString().trim() : "";
+            String newNote   = etNoteEdit.getText()  != null ? etNoteEdit.getText().toString().trim()  : "";
+            String newWeight = etWeightEdit.getText()!= null ? etWeightEdit.getText().toString().trim(): "";
+            String newWasteType = actWasteTypeEdit.getText() != null ? actWasteTypeEdit.getText().toString().trim() : "";
 
-            if (newTitle.isEmpty() || newNote.isEmpty() || newAddress.isEmpty()) {
+            if (newTitle.isEmpty() || newNote.isEmpty() || newWeight.isEmpty() || newWasteType.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            updatePost(postId, newTitle, newNote, newAddress, dialog,
-                    tvTitleFull, tvAddressFull, tvNoteFull);
+            updatePost(postId, newTitle, newNote, newWeight, newWasteType,
+                    dialog, tvTitleFull, tvNoteFull, tvWeightFull, tvWasteTypeFull);
         });
 
         dialog.show();
     }
+
 
     private void pickImageForEdit() {
         Intent intent = new Intent();
@@ -331,11 +350,13 @@ public class ViewActivity extends AppCompatActivity {
     private void updatePost(int postId,
                             String title,
                             String note,
-                            String address,
+                            String weight,
+                            String wasteType,
                             Dialog editDialog,
                             TextView tvTitleFull,
-                            TextView tvAddressFull,
-                            TextView tvNoteFull) {
+                            TextView tvNoteFull,
+                            TextView tvWeightFull,
+                            TextView tvWasteTypeFull) {
 
         Toast.makeText(this,
                 (editImageBytes == null ? "No new image" : "Sending new image"),
@@ -345,7 +366,8 @@ public class ViewActivity extends AppCompatActivity {
         params.put("post_id", String.valueOf(postId));
         params.put("title", title);
         params.put("note", note);
-        params.put("address", address);
+        params.put("weight", weight);
+        params.put("waste_type", wasteType);
 
         Map<String, VolleyMultipartRequest.DataPart> byteData = new HashMap<>();
         if (editImageBytes != null) {
@@ -365,10 +387,11 @@ public class ViewActivity extends AppCompatActivity {
                         String message  = obj.optString("message", "Update failed");
                         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
                         if (success) {
-                            // update the open details dialog UI
+                            // refresh the open dialog
                             tvTitleFull.setText(title);
-                            tvAddressFull.setText(address);
                             tvNoteFull.setText(note);
+                            tvWeightFull.setText("Weight: " + weight + " kg");
+                            tvWasteTypeFull.setText("Type: " + wasteType);
 
                             editDialog.dismiss();
 
@@ -389,6 +412,9 @@ public class ViewActivity extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(req);
     }
+
+
+
 
 
     private void deletePost(int postId, Dialog dialog) {

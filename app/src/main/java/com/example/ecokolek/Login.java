@@ -96,19 +96,22 @@ public class Login extends AppCompatActivity {
                                 message, Toast.LENGTH_LONG).show();
 
                         if ("success".equals(status)) {
-                            int userId = obj.optInt("user_id", 0);
+                            int userId       = obj.optInt("user_id", 0);
+                            String barangay  = obj.optString("baranggay", "");
+                            String city      = obj.optString("city", "");
+
                             android.content.SharedPreferences prefs =
                                     getSharedPreferences("user_prefs", MODE_PRIVATE);
                             android.content.SharedPreferences.Editor editor = prefs.edit();
                             editor.putInt("user_id", userId);
+                            editor.putString("user_barangay", barangay);
+                            editor.putString("user_city", city);
                             editor.apply();
-
 
                             Intent intent = new Intent(Login.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         }
-
 
                     } catch (Exception e) {
                         Toast.makeText(Login.this,

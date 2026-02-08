@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         MaterialButton btnSchedulePickup = findViewById(R.id.btnSchedulePickup);
         MaterialButton btnCommunity = findViewById(R.id.btnCommunity);
         MaterialButton btnViewPosts = findViewById(R.id.btnViewPosts);
+        MaterialButton btnViewDrafts = findViewById(R.id.btnViewDrafts);
 
         btnViewPosts.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, ViewActivity.class));
@@ -62,5 +63,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, CommunityLayout.class);
             startActivity(intent);
         });
+
+
+        btnViewDrafts.setOnClickListener(v -> {
+            Intent i = new Intent(this, DraftListActivity.class);
+            startActivity(i);
+        });
+
     }
 }

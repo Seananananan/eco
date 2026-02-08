@@ -97,14 +97,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:hint="Problem title">
+                    android:hint="Problem title"
+                    app:boxStrokeColor="#8BB86B"
+                    app:boxBackgroundColor="@android:color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etTitleEdit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textCapSentences"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textColorHint="@android:color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Note -->
@@ -114,7 +117,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:hint="Details">
+                    android:hint="Details"
+                    app:boxStrokeColor="#8BB86B"
+                    app:boxBackgroundColor="@android:color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNoteEdit"
@@ -122,24 +127,48 @@
                         android:layout_height="wrap_content"
                         android:inputType="textMultiLine"
                         android:minLines="2"
-                        android:gravity="top|start" />
+                        android:gravity="top|start"
+                        android:textColorHint="@android:color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Address -->
+                <!-- Weight -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilAddressEdit"
+                    android:id="@+id/tilWeightEdit"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:hint="Exact location">
+                    android:hint="Estimated weight (kg)"
+                    app:boxStrokeColor="#8BB86B"
+                    app:boxBackgroundColor="@android:color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etAddressEdit"
+                        android:id="@+id/etWeightEdit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPostalAddress" />
+                        android:inputType="numberDecimal"
+                        android:textColorHint="@android:color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Waste type -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilWasteTypeEdit"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Waste type"
+                    app:boxStrokeColor="#8BB86B"
+                    app:boxBackgroundColor="@android:color/white">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actWasteTypeEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textColorHint="@android:color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <!-- Buttons -->
                 <LinearLayout

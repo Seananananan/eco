@@ -37,7 +37,7 @@
         <activity android:name=".CommunityLayout" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".ViewActivity" />
-
+        <activity android:name=".DraftListActivity" />
     </application>
 
 </manifest>

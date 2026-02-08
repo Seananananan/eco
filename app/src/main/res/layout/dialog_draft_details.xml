@@ -21,9 +21,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- header / top bar (matches #87B86A) -->
+
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/topBarDialog"
+                android:id="@+id/topBarDialogDraft"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:paddingStart="20dp"
@@ -31,10 +31,10 @@
                 android:background="#87B86A">
 
                 <TextView
-                    android:id="@+id/tvDialogTitle"
+                    android:id="@+id/tvDialogDraftTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Report Details"
+                    android:text="Draft details"
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -57,17 +57,17 @@
                     android:paddingTop="16dp"
                     android:paddingBottom="16dp">
 
-
+                    <!-- IMAGE -->
                     <ImageView
-                        android:id="@+id/imgFull"
+                        android:id="@+id/imgDraftFull"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:scaleType="centerCrop"
                         android:background="#E3F0D0" />
 
-
+                    <!-- TITLE -->
                     <TextView
-                        android:id="@+id/tvTitleFull"
+                        android:id="@+id/tvDraftTitleFull"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -75,15 +75,16 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-
+                    <!-- META (weight, type, last edited) -->
                     <TextView
-                        android:id="@+id/tvMetaFull"
+                        android:id="@+id/tvDraftMetaFull"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:textColor="#757575"
                         android:textSize="12sp" />
 
+                    <!-- WASTE DETAILS LABEL -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -93,23 +94,25 @@
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
+                    <!-- WEIGHT -->
                     <TextView
-                        android:id="@+id/tvWeightFull"
+                        android:id="@+id/tvDraftWeightFull"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:textColor="#424242"
                         android:textSize="14sp" />
 
+                    <!-- TYPE -->
                     <TextView
-                        android:id="@+id/tvWasteTypeFull"
+                        android:id="@+id/tvDraftWasteTypeFull"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:textColor="#424242"
                         android:textSize="14sp" />
 
-
+                    <!-- DESCRIPTION LABEL -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -119,14 +122,14 @@
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
+                    <!-- NOTE -->
                     <TextView
-                        android:id="@+id/tvNoteFull"
+                        android:id="@+id/tvDraftNoteFull"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:textColor="#333333"
                         android:textSize="14sp" />
-
 
                     <View
                         android:layout_width="match_parent"
@@ -134,8 +137,9 @@
                         android:layout_marginTop="16dp"
                         android:background="#EEEEEE" />
 
+                    <!-- ACTION BUTTONS: EDIT / DELETE / PUBLISH -->
                     <LinearLayout
-                        android:id="@+id/layoutActions"
+                        android:id="@+id/layoutDraftActions"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -144,7 +148,7 @@
                         android:weightSum="3">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnEdit"
+                            android:id="@+id/btnEditDraftDialog"
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
@@ -155,7 +159,7 @@
                             android:textColor="#87B86A" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnDelete"
+                            android:id="@+id/btnDeleteDraftDialog"
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
@@ -164,8 +168,17 @@
                             android:text="Delete"
                             android:textAllCaps="false"
                             android:textColor="#D32F2F" />
-                    </LinearLayout>
 
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnPublishDraftDialog"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="Publish"
+                            android:textAllCaps="false"
+                            android:textColor="#9E9E9E" />
+                    </LinearLayout>
 
                 </LinearLayout>
             </ScrollView>
